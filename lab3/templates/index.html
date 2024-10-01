@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Key-Value Store</title>
+</head>
+<body>
+    <h1>WebSocket Key-Value Store</h1>
+    <input id="key" placeholder="Key">
+    <input id="value" placeholder="Value">
+    <button id="add">Add</button>
+    
+    <div id="mapDisplay"></div> 
+
+<script> 
+    const ws1 = new WebSocket('ws://185.104.251.226:8084/ws'); 
+    const ws2 = new WebSocket('ws://185.102.139.168:8084/ws');
+    
+    let map = {};
+    
+    ws1.onopen = () => { 
+        console.log('WebSocket connection established with server1'); 
+    }; 
+    
+    ws1.onmessage = (event) => { 
+        const data = JSON.parse(event.data); 
+        map = data;
+        displayMap(map); 
+    }; 
+    
+    ws2.onopen = () => { 
+        console.log('WebSocket connection established with server2'); 
+    }; 
+    
+    ws2.onmessage = (event) => { 
+        const data = JSON.parse(event.data); 
+        map = data;
+        displayMap(map); 
+    }; 
+    
+    document.getElementById('add').onclick = () => { 
+        const key = document.getElementById('key').value; 
+        const value = document.getElementById('value').value; 
+        ws1.send(JSON.stringify({ Command: "ADD", Key: key, Value: value })); 
+        ws2.send(JSON.stringify({ Command: "ADD", Key: key, Value: value })); 
+        document.getElementById('key').value = ''; 
+        document.getElementById('value').value = ''; 
+    }; 
+    
+    function displayMap(map) { 
+        const mapDisplay = document.getElementById('mapDisplay'); 
+        mapDisplay.innerHTML = '<h2>Current Key-Value Pairs:</h2>'; 
+        for (const [key, value] of Object.entries(map)) { 
+            mapDisplay.innerHTML += `<p>${key}: ${value}</p>`; 
+        } 
+    } 
+</script> 
