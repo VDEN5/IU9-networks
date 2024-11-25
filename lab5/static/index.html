@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Новости Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    #news { margin-top: 20px; }
+    .news-item { margin-bottom: 15px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+    .news-title { font-weight: bold; }
+    .news-link { color: blue; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>Новости Dashboard</h1>
+  <div id="news"></div>
+
+  <script>
+    const newsDiv = document.getElementById("news");
+    const ws = new WebSocket("ws://localhost:8080/ws");
+
+    ws.onmessage = (event) => {
+      const newsItems = JSON.parse(event.data);
+      newsDiv.innerHTML = "";
+
+      newsItems.forEach(item => {
+        const newsItemDiv = document.createElement("div");
+        newsItemDiv.classList.add("news-item");
+
+        const title = document.createElement("div");
+        title.classList.add("news-title");
+        title.textContent = item.Title;
+
+        const description = document.createElement("div");
+        description.textContent = item.Description;
+
+        // const link = document.createElement("a");
+        // link.classList.add("news-link");
+        // link.href = item.Link;
+        // link.textContent = "Читать больше";
+        // link.target = "_blank";
+
+        newsItemDiv.appendChild(title);
+        newsItemDiv.appendChild(description);
+        // newsItemDiv.appendChild(link);
+
+        newsDiv.appendChild(newsItemDiv);
+      });
+    };
+
+    ws.onerror = (error) => {
+      console.error("Ошибка WebSocket:", error);
+    };
+  </script>
+</body>
+</html>
