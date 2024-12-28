@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Почтовый клиент</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.email-list {
+    list-style: none;
+    padding: 0;
+}
+
+.email-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.email-item:hover {
+    transform: scale(1.02);
+}
+
+.email-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #ff0000;
+}
+
+.delete-all-btn {
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+.delete-all-btn:hover {
+    background-color: #990000;
+}
+    </style>
+</head>
+<body>
+    <h1>почта</h1>
+    
+    <div class="email-list">
+        {{range .}}
+        <div class="email-item">
+            <div class="email-header">
+                <div>
+                    <strong>От:</strong> {{.From}}<br>
+                    <strong>Тема:</strong> {{.Subject}}
+                </div>
+                <form action="/delete" method="GET" style="display: inline;">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <button type="submit" class="delete-btn">Удалить</button>
+                </form>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</body>
+</html>

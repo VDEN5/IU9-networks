@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <input id="messageInput" type="text" placeholder="Введите сообщение">
+    <button id="sendButton">Отправить</button>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <input type="text" name="text" required>
+        <button type="submit">Загрузить</button>
+    </form>
+    <h2>Сообщения:</h2>
+    <ul id="messagesList"></ul>
+
+    <script>
+        const messagesList = document.getElementById('messagesList');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        const socket = new WebSocket('ws://185.104.251.226:8086/ws');
+
+        socket.onmessage = function(event) {
+            const messages = JSON.parse(event.data);
+            messagesList.innerHTML = '';
+            messages.forEach(function(msg) {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                messagesList.appendChild(li);
+            });
+        };
+
+        sendButton.onclick = function() {
+            const message = messageInput.value;
+            if (message) {
+                socket.send(message);
+                messageInput.value = '';
+            }
+        };
+    </script>
+</body>
+</html>
